@@ -1,6 +1,6 @@
 import './style.css';
 import typescriptLogo from './typescript.svg';
-import viteLogo from '../public/vite.svg';
+import viteLogo from '/vite.svg';
 import { setupCounter } from './counter.ts';
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

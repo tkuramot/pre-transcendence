@@ -6,42 +6,25 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  // frontend
   {
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: {
-        ...globals.browser,
-      },
-      parser: tseslint.parser,
-      parserOptions: {
-        project: 'tsconfig.json',
-        // tsconfigRootDir: import.meta.dirname,
-        sourceType: 'module',
-      },
-    },
-    settings: {
-      'import/resolver': {
-        typescript: {
-          project: './frontend',
-        }, // this loads <root-dir>/tsconfig.json to eslint
-      },
-    },
-    extends: [
-      js.configs.recommended,
-      tseslint.configs.strict,
-      tseslint.configs.stylistic,
-      importPlugin.flatConfigs.recommended,
-    ],
+    name: 'ignore',
+    ignores: ['**/node_modules', '**/dist'],
+  },
+  {
+    name: 'load plugins',
     plugins: {
       'check-file': checkFile,
     },
+  },
+  {
+    name: 'common',
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    extends: [importPlugin.flatConfigs.recommended, js.configs.recommended],
     rules: {
       'check-file/filename-naming-convention': [
         'error',
         {
-          '**/*.ts': 'KEBAB_CASE',
+          '**/*': 'KEBAB_CASE',
         },
         {
           ignoreMiddleExtensions: true,
@@ -50,9 +33,34 @@ export default tseslint.config(
       'check-file/folder-naming-convention': [
         'error',
         {
-          '**/*.ts': 'KEBAB_CASE',
+          '**/*': 'KEBAB_CASE',
         },
       ],
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    },
+  },
+  {
+    name: 'frontend',
+    files: ['./frontend/**/*.{ts,tsx}'],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: '**/tsconfig.json',
+        sourceType: 'module',
+      },
+    },
+    settings: {
+      'import/resolver': {
+        alias: {
+          map: [
+            ['', './public'],
+          ],
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        },
+      },
+    },
+    extends: [tseslint.configs.strict, tseslint.configs.stylistic],
+    rules: {
       '@typescript-eslint/no-unused-vars': 'error',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
@@ -93,36 +101,14 @@ export default tseslint.config(
       ],
     },
   },
-  // backend
   {
-    files: ['**/*.{js,jsx}'],
+    name: 'backend',
+    files: ['./backend/**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: {
         ...globals.node,
       },
-    },
-    extends: [js.configs.recommended, importPlugin.flatConfigs.recommended],
-    plugins: {
-      'check-file': checkFile,
-    },
-    rules: {
-      'check-file/filename-naming-convention': [
-        'error',
-        {
-          '**/*.js': 'KEBAB_CASE',
-        },
-        {
-          ignoreMiddleExtensions: true,
-        },
-      ],
-      'check-file/folder-naming-convention': [
-        'error',
-        {
-          '**/*.js': 'KEBAB_CASE',
-        },
-      ],
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
   eslintConfigPrettier,
